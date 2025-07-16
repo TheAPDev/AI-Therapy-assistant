@@ -101,7 +101,9 @@ const LeftPanel: React.FC = () => {
             <button
               key={friend.id}
               className={`modern-btn w-full text-left ${currentAIFriend?.id === friend.id ? 'ring-2 ring-[var(--accent-color)]' : ''}`}
-              style={{background: 'var(--background-secondary)', color: 'var(--text-primary)'}}>
+              style={{background: 'var(--background-secondary)', color: 'var(--text-primary)'}}
+              onClick={() => setCurrentAIFriend(friend)}
+            >
               <span className="font-semibold">{friend.name}</span>
             </button>
           ))}

@@ -29,6 +29,17 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${getThemeClasses()} transition-all duration-1000`}>
+      {/* Current Bot Name Header */}
+      <div className="w-full flex justify-center items-center py-6">
+        {currentAIFriend ? (
+          <span className="text-2xl font-bold text-white bg-[var(--accent-color)] px-8 py-3 rounded-full shadow-lg">
+            {currentAIFriend.name}
+          </span>
+        ) : (
+          <span className="text-2xl font-bold text-gray-400">No bot selected</span>
+        )}
+      </div>
+
       <div className="flex h-screen">
         {/* Mobile menu buttons */}
         <div className="lg:hidden fixed top-4 left-4 z-50">

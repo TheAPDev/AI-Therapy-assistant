@@ -17,9 +17,9 @@ const RightPanel: React.FC = () => {
     { id: 'reminders', label: 'Reminders', icon: Bell },
   ];
 
+  // Remove 'light' and rearrange the other 4 themes
   const themes = [
     { id: 'dark', name: 'Dark' },
-    { id: 'light', name: 'Light' },
     { id: 'calm', name: 'Calm' },
     { id: 'joyful', name: 'Joyful' },
     { id: 'nature', name: 'Nature' },
@@ -114,7 +114,6 @@ const RightPanel: React.FC = () => {
                     style={{
                       background:
                         themeOption.id === 'dark' ? '#000' :
-                        themeOption.id === 'light' ? '#fff' :
                         themeOption.id === 'calm' ? '#5f8bff' :
                         themeOption.id === 'joyful' ? '#ff9900' :
                         themeOption.id === 'nature' ? '#00c853' :
