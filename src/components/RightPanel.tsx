@@ -19,6 +19,8 @@ const RightPanel: React.FC = () => {
     { id: 'journal', label: 'Journal', icon: BookOpen },
     { id: 'checkin', label: 'Check-In', icon: Calendar },
     { id: 'reminders', label: 'Reminders', icon: Bell },
+    { id: 'soundtherapy', label: 'Sound Therapy', icon: Mic },
+    { id: 'avatars', label: 'Avatars', icon: Shield }, // New Avatars tab
   ];
 
   // Remove 'light' and rearrange the other 4 themes
@@ -376,6 +378,28 @@ const RightPanel: React.FC = () => {
     </div>
   );
 
+  const renderSoundTherapyTab = () => (
+    <div className="space-y-6 animate-fade-in">
+      <div className="glass-card p-6 rounded-2xl border border-white/10 flex flex-col items-center justify-center min-h-[200px]">
+        <h3 className="text-lg font-semibold text-white mb-2">Sound Therapy</h3>
+        <p className="text-slate-300 text-center text-base mt-4">
+          Coming soon: soothing sound frequencies for emotional healing.
+        </p>
+      </div>
+    </div>
+  );
+
+  const renderAvatarsTab = () => (
+    <div className="space-y-6 animate-fade-in">
+      <div className="glass-card p-6 rounded-2xl border border-white/10 flex flex-col items-center justify-center min-h-[200px]">
+        <h3 className="text-lg font-semibold text-white mb-2">Avatars</h3>
+        <p className="text-slate-300 text-center text-base mt-4">
+          Coming soon: personalize your AI companions with expressive avatars.
+        </p>
+      </div>
+    </div>
+  );
+
   const renderContent = () => {
     switch (activeTab) {
       case 'profile':
@@ -388,6 +412,10 @@ const RightPanel: React.FC = () => {
         return renderCheckinTab();
       case 'reminders':
         return renderRemindersTab();
+      case 'soundtherapy':
+        return renderSoundTherapyTab();
+      case 'avatars':
+        return renderAvatarsTab();
       default:
         return renderProfileTab();
     }
@@ -403,7 +431,7 @@ const RightPanel: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={activeTab === tab.id ? 'active' : ''}
+              className={`flex items-center space-x-2 px-4 py-3 w-full rounded-xl mb-2 transition-all duration-200 font-medium text-slate-300 hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 ${activeTab === tab.id ? 'bg-blue-900/30 text-white shadow-lg' : ''}`}
               aria-current={activeTab === tab.id ? 'page' : undefined}
             >
               <IconComponent className="w-5 h-5" />
