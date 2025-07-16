@@ -110,12 +110,16 @@ const RightPanel: React.FC = () => {
               <div className="flex items-center space-x-3">
                 <div className="flex space-x-1 relative">
                   <div
-                    className="w-4 h-4 rounded-full"
-                    style={{ background: config.background }}
-                  ></div>
-                  <div
-                    className="w-4 h-4 rounded-full"
-                    style={{ background: config.accent }}
+                    className="w-6 h-6 rounded-full"
+                    style={{
+                      background:
+                        themeOption.id === 'dark' ? '#000' :
+                        themeOption.id === 'light' ? '#fff' :
+                        themeOption.id === 'calm' ? '#5f8bff' :
+                        themeOption.id === 'joyful' ? '#ff9900' :
+                        themeOption.id === 'nature' ? '#00c853' :
+                        '#000'
+                    }}
                   ></div>
                   {isActive && (
                     <span className="absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-[var(--accent-color)] animate-pulse-glow z-10 bg-[var(--accent-color)]/30">
