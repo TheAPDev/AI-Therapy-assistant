@@ -1,1 +1,2 @@
-# AI-Theray-assistant
+# AI-Therapy-assistant
+<br> Author : Aayushmaan </br>
