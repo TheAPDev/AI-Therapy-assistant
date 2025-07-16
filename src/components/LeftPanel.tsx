@@ -61,7 +61,8 @@ const LeftPanel: React.FC = () => {
       conversations: [],
     };
 
-    setAiFriends([...aiFriends, newFriend]);
+    setAiFriends(prev => [...prev, newFriend]);
+    setCurrentAIFriend(newFriend); // Set the new friend as current so their name appears at the top
     setNewFriendName('');
     setNewFriendEmotions({
       empathy: false,
