@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppContext, themesConfig } from '../context/AppContext';
-import { User, Palette, BookOpen, Calendar, Bell, TrendingUp, Mic, Shield } from 'lucide-react';
+import { User, Palette, BookOpen, Calendar, Bell, TrendingUp, Mic, Shield, X } from 'lucide-react';
 
 const RightPanel: React.FC = () => {
   const { user, theme, setTheme, moodData, setMoodData } = useAppContext();
@@ -8,6 +8,10 @@ const RightPanel: React.FC = () => {
   const [dailyMood, setDailyMood] = useState(7);
   const [dailyEmotion, setDailyEmotion] = useState('');
   const [journalEntry, setJournalEntry] = useState('');
+  const [showEntries, setShowEntries] = useState(false);
+  const [entries, setEntries] = useState<{date: string, content: string}[]>([]);
+  const [selectedEntry, setSelectedEntry] = useState<{date: string, content: string} | null>(null);
+  const [search, setSearch] = useState('');
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: User },
@@ -43,6 +47,28 @@ const RightPanel: React.FC = () => {
     setMoodData([...moodData, newEntry]);
     setDailyMood(7);
     setDailyEmotion('');
+  };
+
+  // Load entries from localStorage on mount and when journalEntry changes
+  React.useEffect(() => {
+    const allEntries: {date: string, content: string}[] = [];
+    Object.keys(localStorage)
+      .filter(key => key.endsWith('.txt'))
+      .forEach(key => {
+        allEntries.push({ date: key.replace('.txt', ''), content: localStorage.getItem(key) || '' });
+      });
+    allEntries.sort((a, b) => b.date.localeCompare(a.date));
+    setEntries(allEntries);
+  }, [journalEntry]);
+
+  // Save journal entry as file
+  const handleSaveEntry = () => {
+    const date = new Date().toISOString().split('T')[0];
+    if (journalEntry.trim()) {
+      localStorage.setItem(`${date}.txt`, journalEntry);
+      setJournalEntry('');
+      setEntries(prev => [{date, content: journalEntry}, ...prev.filter(e => e.date !== date)]);
+    }
   };
 
   const renderProfileTab = () => (
@@ -145,12 +171,64 @@ const RightPanel: React.FC = () => {
           placeholder="How are you feeling today? What's on your mind?"
           className="w-full h-32 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 resize-none"
         />
-        <button className="modern-btn w-full mt-2">
+        <button className="modern-btn w-full mt-2" onClick={handleSaveEntry}>
           Save Entry
         </button>
       </div>
-
-      <div className="glass-card p-4 rounded-2xl border border-white/10">
+      {/* My Entries Collapsible */}
+      <div className="glass-card p-4 rounded-2xl border border-white/10 mt-4">
+        <button
+          className="w-full flex justify-between items-center text-white font-semibold text-base focus:outline-none transition-colors duration-200 hover:bg-white/5 rounded-xl px-2 py-2"
+          onClick={() => setShowEntries(v => !v)}
+        >
+          <span>My Entries</span>
+          <span className={`transition-transform duration-300 ${showEntries ? 'rotate-90' : ''}`}>▶</span>
+        </button>
+        {showEntries && (
+          <div className="mt-3 max-h-56 overflow-y-auto transition-all duration-300">
+            <input
+              type="text"
+              placeholder="Search entries..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full mb-2 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500/50"
+            />
+            <ul className="divide-y divide-white/10">
+              {entries.filter(e => e.date.includes(search)).length === 0 && (
+                <li className="text-slate-400 py-4 text-center">No entries found.</li>
+              )}
+              {entries.filter(e => e.date.includes(search)).map(entry => (
+                <li
+                  key={entry.date}
+                  className="py-2 px-2 rounded-lg transition-colors duration-200 cursor-pointer hover:bg-blue-900/30 active:bg-blue-900/50 text-white flex items-center justify-between"
+                  onClick={() => setSelectedEntry(entry)}
+                >
+                  <span>{entry.date}.txt</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      {/* Entry Preview Modal */}
+      {selectedEntry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="bg-[#181a20] rounded-2xl shadow-2xl p-6 max-w-lg w-full relative animate-fade-in">
+            <button
+              className="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors"
+              onClick={() => setSelectedEntry(null)}
+              aria-label="Close"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <h4 className="text-lg font-bold text-white mb-2">{selectedEntry.date}.txt</h4>
+            <pre className="whitespace-pre-wrap text-slate-200 bg-black/10 rounded-lg p-4 max-h-72 overflow-y-auto border border-white/10">
+              {selectedEntry.content}
+            </pre>
+          </div>
+        </div>
+      )}
+      <div className="glass-card p-4 rounded-2xl border border-white/10 mt-4">
         <h4 className="font-semibold text-white mb-3">AI Suggestions</h4>
         <div className="space-y-2">
           <p className="text-slate-300 text-sm">💭 "Reflect on a moment today that brought you joy"</p>
